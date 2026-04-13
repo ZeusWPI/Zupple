@@ -7,6 +7,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _ = dotenvy::dotenv();
     let config = AppConfig::load()?;
 
+
     // setup logging
     tracing_subscriber::registry()
         .with(fmt::layer())

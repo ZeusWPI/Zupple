@@ -1,1 +1,1 @@
-mod takuzu;
+pub(crate) mod takuzu;

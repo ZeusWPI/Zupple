@@ -34,3 +34,4 @@ tower-http = { version = "0.6.6", default-features = false, features = [
     "compression-zstd",
     "cors",
 ] }
+rand = "0.8.5"
