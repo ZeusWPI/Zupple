@@ -1,6 +1,7 @@
 mod error;
 mod generate;
 
+use std::fmt::{Display, Formatter, Write};
 use crate::puzzle::takuzu::error::TakuzuError;
 use crate::puzzle::takuzu::error::TakuzuError::InvalidSize;
 use crate::puzzle::takuzu::generate::generate_grid;
@@ -21,10 +22,18 @@ impl TakuzuDifficulty {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-#[derive(Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum TakuzuCell {
     O, X, Empty
+}
+impl Display for TakuzuCell {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TakuzuCell::O => f.write_str("O"),
+            TakuzuCell::X => f.write_str("X"),
+            TakuzuCell::Empty => f.write_str("_")
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -55,3 +64,28 @@ impl Takuzu {
     }
 }
 
+impl Display for Takuzu {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Takuzu: ")?;
+        f.write_fmt(format_args!("size {}", self.size))?;
+
+
+        let mut divider = "\n ".to_owned();
+
+        for _ in 0..self.size {
+            divider.push_str("----");
+        }
+        divider.push_str("-\n");
+
+        for row in 0..self.size {
+            f.write_str(&divider)?;
+            for col in 0..self.size {
+                let value = self.grid[row as usize][col as usize];
+                f.write_fmt(format_args!(" | {}", value))?;
+            }
+            f.write_str(" |")?;
+        }
+        f.write_str(&divider)?;
+        Ok(())
+    }
+}
