@@ -18,7 +18,7 @@ pub struct AppState {
 }
 
 pub async fn start_app(config: AppConfig) -> Result<(), AppError> {
-    println!("{:?}", Takuzu::new(8));
+    println!("{:?}", Takuzu::new(8).unwrap());
     let db = Database::create_connect_migrate(&config.database_url).await?;
 
     let state = AppState { db, config };

@@ -2,6 +2,7 @@ mod error;
 mod generate;
 
 use crate::puzzle::takuzu::error::TakuzuError;
+use crate::puzzle::takuzu::error::TakuzuError::InvalidSize;
 use crate::puzzle::takuzu::generate::generate_grid;
 use crate::puzzle::takuzu::TakuzuDifficulty::{Easy, Hard, Medium, Extreme};
 
@@ -38,12 +39,15 @@ pub struct Takuzu {
     size: u8
 }
 impl Takuzu {
-    pub fn new(size: u8) -> Takuzu {
-        Takuzu {
+    pub fn new(size: u8) -> Result<Takuzu, TakuzuError> {
+        if size % 2 == 1 || size > 16 {
+            return Err(InvalidSize);
+        }
+        Ok(Takuzu {
             puzzles: vec![],
             size,
             grid: generate_grid(size)
-        }
+        })
     }
 
     pub fn generate_puzzle(&mut self, difficulty: TakuzuDifficulty) {
