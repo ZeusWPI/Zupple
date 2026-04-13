@@ -11,8 +11,8 @@ var (
 )
 
 type Crossview struct {
-	size  int
-	field []uint8
+	Size  int
+	Field []uint8
 }
 
 func New(size int) (*Crossview, error) {
@@ -21,7 +21,7 @@ func New(size int) (*Crossview, error) {
 	}
 
 	c := &Crossview{
-		size: size,
+		Size: size,
 	}
 
 	if err := c.generate(); err != nil {
@@ -31,6 +31,23 @@ func New(size int) (*Crossview, error) {
 	return c, nil
 }
 
+// Puzzle generates a new puzzle mask for the field
+// When no filled percentage is provided, the difficulty default is used
+func (c *Crossview) Puzzle(diff Difficulty, filledPercentage ...float64) ([]uint8, error) {
+	return newGrid(c.Size, c.Field).generateMask(diff, filledPercentage...)
+}
+
+// PuzzleString renders the solved field using the given mask.
+func (c *Crossview) PuzzleString(mask []uint8) (string, error) {
+	return newGrid(c.Size, c.Field).string(mask)
+}
+
 func (c *Crossview) String() string {
-	return c.grid().string()
+	grid := c.grid()
+	rendered, err := grid.string()
+	if err != nil {
+		return ""
+	}
+
+	return rendered
 }

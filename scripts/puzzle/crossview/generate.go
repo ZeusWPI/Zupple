@@ -1,7 +1,7 @@
 package crossview
 
 func (c *Crossview) generate() error {
-	g := emptyGrid(c.size)
+	g := emptyGrid(c.Size)
 
 	// Set blocked cells
 	for r := range g.size {
@@ -13,8 +13,8 @@ func (c *Crossview) generate() error {
 	}
 
 	// Recalculate all cells
-	for r := range c.size {
-		for c := range c.size {
+	for r := range c.Size {
+		for c := range c.Size {
 			if g.at(r, c) == blocked {
 				continue
 			}
@@ -28,7 +28,7 @@ func (c *Crossview) generate() error {
 		}
 	}
 
-	c.field = g.cells
+	c.Field = g.cells
 
 	return nil
 }

@@ -28,8 +28,8 @@ type grid struct {
 
 func (c Crossview) grid() grid {
 	return grid{
-		size:  c.size,
-		cells: c.field,
+		size:  c.Size,
+		cells: c.Field,
 	}
 }
 
@@ -137,7 +137,15 @@ func (g grid) valid() bool {
 	return true
 }
 
-func (g grid) string() string {
+func (g grid) string(mask ...[]uint8) (string, error) {
+	var activeMask []uint8
+	if len(mask) > 0 {
+		activeMask = mask[0]
+		if err := g.validateMask(activeMask); err != nil {
+			return "", err
+		}
+	}
+
 	var builder strings.Builder
 
 	fmt.Fprintf(&builder, "\n Size: %d * %d", g.size, g.size)
@@ -156,13 +164,30 @@ func (g grid) string() string {
 			if cell == blocked {
 				value = "XX"
 			}
+			if activeMask != nil && activeMask[r*g.size+c] == 0 {
+				value = "  "
+			}
 			builder.WriteString(" | " + value)
 		}
 		builder.WriteString(" |")
 	}
 	builder.WriteString(divider)
 
-	return builder.String()
+	return builder.String(), nil
+}
+
+func (g grid) validateMask(mask []uint8) error {
+	if len(mask) != g.size*g.size {
+		return errInvalidMaskLength
+	}
+
+	for _, value := range mask {
+		if value != 0 && value != 1 {
+			return errInvalidMaskValue
+		}
+	}
+
+	return nil
 }
 
 func validateSize(size int) error {

@@ -552,7 +552,9 @@ func solveByBacktracking(g grid) bool {
 	return solve(0)
 }
 
-func solveUnique(g grid) bool {
+func solveUnique(size int, board []uint8) bool {
+	g := newGrid(size, board)
+
 	solutions := 0
 
 	var solve func(idx int)
