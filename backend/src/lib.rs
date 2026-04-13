@@ -9,7 +9,7 @@ pub mod config;
 mod error;
 mod extractors;
 mod handlers;
-mod puzzle;
+pub mod puzzle;
 
 #[derive(Clone)]
 pub struct AppState {
