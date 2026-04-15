@@ -1,13 +1,16 @@
 mod error;
 mod generate;
+mod carve;
+mod solve;
 
 use std::fmt::{Display, Formatter, Write};
 use crate::puzzle::takuzu::error::TakuzuError;
 use crate::puzzle::takuzu::error::TakuzuError::InvalidSize;
 use crate::puzzle::takuzu::generate::generate_grid;
+use crate::puzzle::takuzu::TakuzuCell::{Empty, O, X};
 use crate::puzzle::takuzu::TakuzuDifficulty::{Easy, Hard, Medium, Extreme};
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum TakuzuDifficulty {
     Easy, Medium, Hard, Extreme
 }
@@ -20,32 +23,49 @@ impl TakuzuDifficulty {
             _ => Err(TakuzuError::NoLowerDifficulty)
         }
     }
+    pub fn default_fill_percentage(&self) -> f64 {
+        match self {
+            Easy => 0.60,
+            Medium => 0.55,
+            Hard => 0.45,
+            Extreme => 0.35
+        }
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum TakuzuCell {
     O, X, Empty
 }
+impl TakuzuCell {
+    pub fn other(&self) -> TakuzuCell {
+        match self {
+            O => X,
+            X => O,
+            Empty => Empty,
+        }
+    }
+}
 impl Display for TakuzuCell {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            TakuzuCell::O => f.write_str("O"),
-            TakuzuCell::X => f.write_str("X"),
-            TakuzuCell::Empty => f.write_str("_")
+            O => f.write_str("O"),
+            X => f.write_str("X"),
+            Empty => f.write_str("_")
         }
     }
 }
 
 #[derive(Debug)]
-struct TakuzuPuzzle {
+pub struct TakuzuPuzzle {
     difficulty: TakuzuDifficulty,
-    mask: Vec<Vec<TakuzuCell>>
+    mask: Vec<Vec<bool>>
 }
 #[derive(Debug)]
 pub struct Takuzu {
-    puzzles: Vec<TakuzuPuzzle>,
-    grid: Vec<Vec<TakuzuCell>>,
-    size: u8
+    pub puzzles: Vec<TakuzuPuzzle>,
+    pub grid: Vec<Vec<TakuzuCell>>,
+    pub size: u8
 }
 impl Takuzu {
     pub fn new(size: u8) -> Result<Takuzu, TakuzuError> {
@@ -59,9 +79,6 @@ impl Takuzu {
         })
     }
 
-    pub fn generate_puzzle(&mut self, difficulty: TakuzuDifficulty) {
-        todo!()
-    }
 }
 
 impl Display for Takuzu {

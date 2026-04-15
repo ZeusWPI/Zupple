@@ -4,6 +4,7 @@ use database::Database;
 use tower_http::{compression::CompressionLayer, cors::CorsLayer, trace::TraceLayer};
 use tracing::info;
 use puzzle::takuzu::Takuzu;
+use crate::puzzle::takuzu::TakuzuDifficulty;
 
 pub mod config;
 mod error;
@@ -18,7 +19,11 @@ pub struct AppState {
 }
 
 pub async fn start_app(config: AppConfig) -> Result<(), AppError> {
-    println!("{}", Takuzu::new(8).unwrap());
+    let mut takuzu = Takuzu::new(8).unwrap();
+    println!("{}", takuzu);
+    takuzu.generate_puzzle(TakuzuDifficulty::Medium, None).unwrap();
+    println!("{:?}", takuzu.puzzles);
+
     let db = Database::create_connect_migrate(&config.database_url).await?;
 
     let state = AppState { db, config };

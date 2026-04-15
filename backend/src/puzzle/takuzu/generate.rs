@@ -3,13 +3,13 @@ use crate::puzzle::takuzu::TakuzuCell::{X, O, Empty};
 
 
 #[derive(Clone, Copy, Default)]
-struct CellCounts {
-    x_count: u8,
-    o_count: u8,
+pub(super) struct CellCounts {
+    pub x_count: u8,
+    pub o_count: u8,
 }
 
 impl CellCounts {
-    fn add(&mut self, value: TakuzuCell) {
+    pub fn add(&mut self, value: TakuzuCell) {
         match value {
             X => self.x_count += 1,
             O => self.o_count += 1,
@@ -17,7 +17,7 @@ impl CellCounts {
         }
     }
 
-    fn remove(&mut self, value: TakuzuCell) {
+    pub fn remove(&mut self, value: TakuzuCell) {
         match value {
             X => self.x_count -= 1,
             O => self.o_count -= 1,
@@ -25,9 +25,19 @@ impl CellCounts {
         }
     }
 
-    fn can_balance_with_remaining(&self, half: u8) -> bool {
+    pub fn can_balance_with_remaining(&self, half: u8) -> bool {
         self.x_count <= half
             && self.o_count <= half
+    }
+
+    pub fn completion_value(&self, size: u8) -> Option<TakuzuCell> {
+        if self.x_count == size / 2 {
+            return Some(O);
+        }
+        if self.o_count == size / 2 {
+            return Some(X);
+        }
+        None
     }
 }
 

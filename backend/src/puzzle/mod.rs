@@ -1,2 +1,2 @@
-pub mod kuromasu;
+// pub mod kuromasu;
 pub(crate) mod takuzu;

@@ -1,5 +1,7 @@
 #[derive(Debug)]
 pub enum TakuzuError {
     NoLowerDifficulty,
-    InvalidSize
+    InvalidSize,
+    CantSolve,
+    NoUniqueSolution
 }
